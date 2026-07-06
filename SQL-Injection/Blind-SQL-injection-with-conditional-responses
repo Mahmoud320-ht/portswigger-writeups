@@ -23,6 +23,7 @@ TrackingId=x' AND (SELECT SUBSTRING(password,$1$,1) FROM users WHERE username='a
 on burp suite send request to intruder ,i select 2 positions on for position of character in password & one for password 
 I select numbers for 1st position & brute force for 2nd position 
 I'll show 
+![Baseline Request](images/02.png)
 
 
 
