@@ -1,0 +1,70 @@
+Portswigger:Server-side template injection using documentation
+
+server-side template injection(SSTI)
+
+
+Lab: Server-side template injection using documentation.
+
+Difficulty: practitioner.
+
+First, let’s briefly discuss SSTI
+What is Server-Side Template Injection
+Server-Side Template Injection (SSTI) happens when an application takes user input and feeds it into
+a server-side template engine as a template (not just as plain text). If the template engine evaluates
+that input, an attacker can inject template expressions that the engine executes — which can lead to data leaks,
+arbitrary code execution, or other severe impacts.
+
+How it typically occurs
+Web app uses a template engine (e.g., Jinja2, Twig, Velocity, Freemarker, ERB, etc.) to build HTML or other text.
+
+App mistakenly treats unsanitized user data as template source or allows user-supplied templates.
+
+Template engine evaluates attacker-controlled expressions (because template engines can include logic, function calls, object access).
+
+Example (conceptual only):
+
+App does something like render_template(user_input) or performs Template(user_input).render() where user_input came from
+a form field — if the engine evaluates expressions in that input, injection is possible
+
+To solve lab
+This lab is vulnerable to server-side template injection. To solve the lab,
+identify the template engine and use the documentation to work out
+how to execute arbitrary code, then delete the morale.txt file from Carlos's home directory.
+
+Now we can solve and understand how it happen let’s begin.
+
+#Step 1
+I login as content-manager credentials.
+
+Become a Medium member
+content-manager:C0nt3ntM4n4g3r
+
+#Step 2
+I look at the website on burp and see all buttons and what we can do on it.
+
+I note that we can modify the template after look and try i found that the stock,
+price and name Only ${product.stock} left of ${product.name} at ${product.price}.</p> .
+
+
+#Step 3
+Now we can test that by replace ${7*7} it worked and get result {49}.
+
+
+#Step 4
+Identify template engine
+
+The ${...} expression was evaluated successfully. Based on the syntax and the application's behavior,
+I consulted the template engine documentation and confirmed that the application was using FreeMarker.
+#Step 5
+Now, we can delete the file by
+
+<#assign ex=”freemarker.template.utility.Execute”?new()> ${ ex(“rm morale.txt”) }
+
+Finally
+The application rendered user-controlled input directly inside a FreeMarker template without proper sanitization,
+allowing template expressions to be evaluated.
+
+Key Takeaways
+Always identify the template engine before attempting further testing.
+Official documentation is often enough to understand available template features.
+Never render untrusted input as template code.
